@@ -8,13 +8,7 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     steps:
-      - name: Очищаем старые запуски воркфлоу
-        uses: actions/delete-package-versions@v5
-        with:
-          package-name: 'awg-primary.conf'
-          min-versions-to-keep: 1
-      
-      - name: Альтернативная очистка истории запусков
+      - name: Удаляем старые запуски, оставляя последний
         uses: Mattraks/delete-workflow-runs@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
