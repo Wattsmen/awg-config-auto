@@ -22,10 +22,11 @@ jobs:
           cd scripts
           bash warp_generator.sh
           
+          # Фиксируем только DNS и Address
+          # Endpoint оставляем тот, что выдала Cloudflare
           sed -i \
             -e 's/^DNS = .*/DNS = 1.1.1.1, 1.0.0.1/' \
             -e 's/^Address = .*/Address = 172.16.0.2\/32/' \
-            -e 's/^Endpoint = .*/Endpoint = 162.159.192.233:4500/' \
             warp.conf
           
           cp warp.conf ../awg-primary.conf
