@@ -1,4 +1,4 @@
-name: Generate AmneziaWG Config
+name: Generate 2 AmneziaWG Configs
 on:
   schedule:
     - cron: '0 0 * * *'
@@ -16,18 +16,42 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y wireguard-tools jq curl
       
-      - name: Запускаем генератор
+      - name: Генерируем Конфиг №1 — Основной
         run: |
           chmod +x scripts/warp_generator.sh
-          cd scripts && bash warp_generator.sh
-          cp warp.conf ../awg.conf
+          cd scripts
+          bash warp_generator.sh
+          
+          # Применяем индивидуальные параметры для Конфига 1
+          sed -i \
+            -e 's/^DNS = .*/DNS = 1.1.1.1, 1.0.0.1/' \
+            -e 's/^Address = .*/Address = 172.16.0.2\/32/' \
+            -e 's/^Endpoint = .*/Endpoint = 162.159.192.1:4500/' \
+            warp.conf
+          
+          cp warp.conf ../awg-primary.conf
       
-      - name: Сохраняем конфиг
+      - name: Генерируем Конфиг №2 — Резервный
+        run: |
+          cd scripts
+          rm -f warp.conf
+          bash warp_generator.sh
+          
+          # Применяем индивидуальные параметры для Конфига 2
+          sed -i \
+            -e 's/^DNS = .*/DNS = 8.8.8.8, 8.8.4.4/' \
+            -e 's/^Address = .*/Address = 172.16.0.3\/32/' \
+            -e 's/^Endpoint = .*/Endpoint = 162.159.193.1:4501/' \
+            warp.conf
+          
+          cp warp.conf ../awg-secondary.conf
+      
+      - name: Сохраняем оба конфига
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add awg.conf
-          git commit -m "Auto-update config $(date +%Y-%m-%d)" || echo "Нет изменений"
+          git add awg-primary.conf awg-secondary.conf
+          git commit -m "Auto-update configs $(date +%Y-%m-%d)" || echo "Нет изменений"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
