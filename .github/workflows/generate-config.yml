@@ -27,7 +27,8 @@ jobs:
             -e 's/^Address = .*/Address = 172.16.0.2\/32/' \
             warp.conf
           
-          cp warp.conf ../awg-primary.conf
+          # Новый файл перезаписывает старый автоматически
+          cp -f warp.conf ../awg-primary.conf
       
       - name: Сохраняем конфиг
         run: |
