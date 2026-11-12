@@ -20,7 +20,7 @@ jobs:
         run: |
           chmod +x scripts/warp_generator.sh
           cd scripts && bash warp_generator.sh
-          cp amneziawg.conf ../awg.conf
+          cp warp.conf ../awg.conf
       
       - name: Сохраняем конфиг
         run: |
