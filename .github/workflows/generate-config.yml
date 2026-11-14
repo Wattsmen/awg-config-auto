@@ -1,4 +1,4 @@
-name: Generate AmneziaWG Config
+name: Generate AWG Config
 on:
   workflow_dispatch:
   schedule:
