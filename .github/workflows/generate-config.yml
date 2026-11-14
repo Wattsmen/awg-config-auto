@@ -30,7 +30,7 @@ jobs:
         run: |
           sudo apt-get update -yq
           sudo apt-get install -yq wireguard-tools jq curl
-
+          
       - name: ⚙️ Генерируем конфиг AmneziaWG
         run: |
           chmod +x scripts/warp_generator.sh
@@ -42,6 +42,9 @@ jobs:
             -e 's/^Address = .*/Address = 172.16.0.2\/32/' \
             -e 's/^Endpoint = \([^:]*\):[0-9]*/Endpoint = \1:4500/' \
             warp.conf
+          
+          cp -f warp.conf ../awg-primary.conf
+
           
           cp -f warp.conf ../awg-primary.conf
 
